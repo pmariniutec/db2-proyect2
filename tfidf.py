@@ -1,117 +1,119 @@
-from nltk.tokenize import word_tokenize
-from preprocessor import preprocess
 import math
-import numpy as np
 from collections import Counter
+from nltk.tokenize import word_tokenize
+import numpy as np
+from preprocessor import preprocess
 
 
-# TODO: refactor as class
+class Index:
+    """Defines a TF-IDF index"""
 
 
-def calculate_df(data, dataset_size):
-    df = {}
-    for i in range(dataset_size):
-        tokens = data[i]
-        for w in tokens:
+    def __init__(self, tweets, dataset_size):
+        self.df = {}
+        self.total_vocab = []
+        self.vocabulary_size = 0
+        self.dataset_size = dataset_size
+        self.D = None
+        self.index = self.build_index(tweets)
+
+
+    def build_index(self, data):
+        preprocessed_text = [word_tokenize(str(preprocess(text))) for text in data]
+        self.df = self.calculate_df(preprocessed_text, self.dataset_size)
+
+        self.total_vocab = [x for x in self.df]
+        self.vocabulary_size = len(self.df)
+
+        tf_idf = self.calculate_tfidf(preprocessed_text, self.dataset_size, self.df)
+
+        # Vectorize tf-idf
+        self.D = np.zeros((self.dataset_size, self.vocabulary_size))
+        for i in tf_idf:
             try:
-                df[w].add(i)
-            except: 
-                df[w] = {i}
+                ind = self.total_vocab.index(i[1])
+                self.D[i[0]][ind] = tf_idf[i]
+            except:
+                pass
 
-    # Replace list of ids with count of documents
-    for i in df:
-        df[i] = len(df[i])
-
-    return df
+        return tf_idf
 
 
-def doc_frequency(word):
-    c = 0
-    try:
-        c = df[word]
-    except:
-        pass
-    return c
+    def search(self, k, query):
+        preprocessed_query = preprocess(query)
+        tokens = word_tokenize(str(preprocessed_query))
+
+        d_cosines = []
+        query_vector = self.gen_vector(tokens)
+
+        for d in self.D:
+            d_cosines.append(self.cosine_similarity(query_vector, d))
+
+        out = np.array(d_cosines).argsort()[-k:][::-1]
+        return out
 
 
-def calculate_tfidf(data, dataset_size, df):
-    doc = 0
-    tf_idf = {}
-    for i in range(dataset_size):
-        tokens = data[i]
+    def cosine_similarity(self, a, b):
+        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+
+    def gen_vector(self, tokens):
+        Q = np.zeros((len(self.total_vocab)))
         counter = Counter(tokens)
         words_count = len(tokens)
 
         for token in np.unique(tokens):
             tf = counter[token] / words_count
-            df = doc_frequency(token)
-            idf = np.log((dataset_size + 1) / (df + 1))
-            tf_idf[doc, token] = tf * idf
-        doc += 1
-    return tf_idf
+            self.df = self.doc_frequency(token)
+            idf = math.log((self.dataset_size + 1) / (self.df + 1))
+
+            try:
+                ind = self.total_vocab.index(token)
+                Q[ind] = tf * idf
+            except:
+                pass
+
+        return Q
 
 
-def cosine_similarity(a, b):
-    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+    def calculate_df(self, data, dataset_size):
+        df = {}
+        for i in range(dataset_size):
+            tokens = data[i]
+            for w in tokens:
+                try:
+                    df[w].add(i)
+                except: 
+                    df[w] = {i}
+
+        # Replace list of ids with count of documents
+        for i in df:
+            df[i] = len(df[i])
+
+        return df
 
 
-def gen_vector(tokens):
-    Q = np.zeros((len(total_vocab)))
-    counter = Counter(tokens)
-    words_count = len(tokens)
-
-    for token in np.unique(tokens):
-        tf = counter[token] / words_count
-        df = doc_frequency(token)
-        idf = math.log((dataset_size + 1) / (df + 1))
-
+    def doc_frequency(self, word):
+        c = 0
         try:
-            ind = total_vocab.index(token)
-            Q[ind] = tf * idf
+            c = self.df[word]
         except:
             pass
-
-    return Q
-
-
-def search(k, query):
-    preprocessed_query = preprocess(query)
-    tokens = word_tokenize(str(preprocessed_query))
-
-    d_cosines = []
-    query_vector = gen_vector(tokens)
-
-    for d in D:
-        d_cosines.append(cosine_similarity(query_vector, d))
-
-    out = np.array(d_cosines).argsort()[-k:][::-1]
-    return out
+        return c
 
 
-def build_index(data, size):
-    global df
-    global total_vocab
-    global vocabulary_size
-    global dataset_size
-    global D
-    dataset_size = size
+    def calculate_tfidf(self, data, dataset_size, df):
+        doc = 0
+        tf_idf = {}
+        for i in range(dataset_size):
+            tokens = data[i]
+            counter = Counter(tokens)
+            words_count = len(tokens)
 
-    preprocessed_text = [word_tokenize(str(preprocess(text))) for text in data]
-    df = calculate_df(preprocessed_text, dataset_size)
-
-    total_vocab = [x for x in df]
-    vocabulary_size = len(df)
-    print('Vocabulary size:', vocabulary_size)
-
-    tf_idf = calculate_tfidf(preprocessed_text, dataset_size, df)
-
-    # Vectorize tf-idf
-    D = np.zeros((dataset_size, vocabulary_size))
-    for i in tf_idf:
-        try:
-            ind = total_vocab.index(i[1])
-            D[i[0]][ind] = tf_idf[i]
-        except:
-            pass
-
-    return tf_idf
+            for token in np.unique(tokens):
+                tf = counter[token] / words_count
+                df = self.doc_frequency(token)
+                idf = np.log((dataset_size + 1) / (df + 1))
+                tf_idf[doc, token] = tf * idf
+            doc += 1
+        return tf_idf

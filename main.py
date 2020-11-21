@@ -1,11 +1,12 @@
+import json
+import os
+import numpy as np
+
 from twitter_serializer import serialize_tweets
 from nltk.tokenize import word_tokenize
 from preprocessor import preprocess
 from collections import Counter
-import json
-import os
-import numpy as np
-from tfidf import build_index, search
+from tfidf import Index
 
 
 documents_dir = f'{str(os.getcwd())}/documents/'
@@ -27,20 +28,13 @@ def read_tweets(files):
 
 def main():
     # tweets = serialize_tweets()
+    # NOTE: Assume the current list of tweets fits in RAM?
     tweets = read_tweets(get_tweets_files())
     dataset_size = len(tweets)
 
-    index = build_index(tweets, dataset_size)
-    q = search(10, "Trump is no longer a puppet")
-    print(q)
-
-    # TODO: DESIRED API
-    '''
-    index = Index()
+    index = Index(tweets, dataset_size)
     q = index.search(10, "Trump is no longer a puppet")
     print(q)
-    '''
-
 
 
 if __name__ == '__main__':
