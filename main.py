@@ -2,7 +2,7 @@ import json
 import os
 import numpy as np
 
-from twitter_serializer import serialize_tweets
+from twitter_serializer import get_tweets
 from nltk.tokenize import word_tokenize
 from preprocessor import preprocess
 from collections import Counter
@@ -27,7 +27,7 @@ def read_tweets(files):
 
 
 def main():
-    # tweets = serialize_tweets()
+    # tweets = get_tweets('biden')
     # NOTE: Assume the current list of tweets fits in RAM?
     tweets = read_tweets(get_tweets_files())
     dataset_size = len(tweets)

@@ -18,6 +18,10 @@ class Index:
         self.index = self.build_index(tweets)
 
 
+    # TODO: External Merge Sort.
+    #       Available Memory: M | Block Size: B
+    #       M/B-way merge
+    #       Ref: https://en.wikipedia.org/wiki/External_sorting
     def build_index(self, data):
         preprocessed_text = [word_tokenize(str(preprocess(text))) for text in data]
         self.df = self.calculate_df(preprocessed_text, self.dataset_size)

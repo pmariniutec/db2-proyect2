@@ -10,7 +10,7 @@ headers = {
     'Authorization': f'Bearer {TOKEN}'
 }
 
-def get_tweets(search_term):
+def fetch_tweets(search_term):
     query = f'max_results=100&query={search_term}&tweet.fields=lang'
 
     req = requests.get(f'{ENDPOINT}?{query}', headers=headers)

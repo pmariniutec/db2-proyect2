@@ -1,13 +1,13 @@
-from twitter_api import get_tweets
+from twitter_api import fetch_tweets
 import json
 import os
 import uuid
 
 base_folder = 'documents/'
 
-def serialize_tweets():
+def get_tweets(search_term):
     # NOTE: Twitter API doesn't allow to filter by language directly.
-    tweets = filter(lambda x: x.get('lang') == 'en', get_tweets('biden').get('data'))
+    tweets = filter(lambda x: x.get('lang') == 'en', fetch_tweets(search_term).get('data'))
     tweets = list(map(lambda x: { 'id': x.get('id'), 'text': x.get('text') }, tweets))
 
     random_filename = os.path.join(base_folder, f'tweets_{str(uuid.uuid4())}.json')
