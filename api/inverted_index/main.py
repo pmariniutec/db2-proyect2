@@ -2,11 +2,11 @@ import json
 import os
 import numpy as np
 
-from twitter_serializer import get_tweets
 from nltk.tokenize import word_tokenize
-from preprocessor import preprocess
 from collections import Counter
-from tfidf import Index
+from .tfidf import Index
+from .twitter_serializer import get_tweets
+from .preprocessor import preprocess
 
 
 documents_dir = f'{str(os.getcwd())}/documents/'
@@ -26,16 +26,13 @@ def read_tweets(files):
     return data
 
 
-def main():
+def init_index():
     # tweets = get_tweets('biden')
     # NOTE: Assume the current list of tweets fits in RAM?
     tweets = read_tweets(get_tweets_files())
     dataset_size = len(tweets)
 
     index = Index(tweets, dataset_size)
-    q = index.search(10, "Trump is no longer a puppet")
-    print(q)
-
-
-if __name__ == '__main__':
-    main()
+    # q = index.search(10, "Trump is no longer a puppet")
+    # print(q)
+    return index

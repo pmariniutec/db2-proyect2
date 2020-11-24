@@ -1,7 +1,7 @@
-from twitter_api import fetch_tweets
 import json
 import os
 import uuid
+from .twitter_api import fetch_tweets
 
 base_folder = 'documents/'
 

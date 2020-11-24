@@ -1,4 +1,4 @@
-# TF-IDF Tweet Ranking with Cosine Similarity
+# Backend
 
 ## Project Setup
 ```bash
@@ -10,9 +10,6 @@ pipenv install
 
 # activate virtual environment
 pipenv shell
-
-# Download nltk dependencies
-python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt')"
 
 # run project
 python main.py

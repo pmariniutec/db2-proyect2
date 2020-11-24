@@ -7,12 +7,14 @@ verify_ssl = true
 autopep8 = "*"
 
 [packages]
+flask-api = "*"
 nltk = "*"
 numpy = "*"
 pandas = "*"
 num2words = "*"
 requests = "*"
 pylint = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.8"

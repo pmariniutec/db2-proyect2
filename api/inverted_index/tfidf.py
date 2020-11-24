@@ -2,7 +2,7 @@ import math
 from collections import Counter
 from nltk.tokenize import word_tokenize
 import numpy as np
-from preprocessor import preprocess
+from .preprocessor import preprocess
 
 
 class Index:
@@ -23,13 +23,14 @@ class Index:
     #       M/B-way merge
     #       Ref: https://en.wikipedia.org/wiki/External_sorting
     def build_index(self, data):
-        preprocessed_text = [word_tokenize(str(preprocess(text))) for text in data]
-        self.df = self.calculate_df(preprocessed_text, self.dataset_size)
+        self.tweets = data
+        self.preprocessed_text = [word_tokenize(str(preprocess(text))) for text in data]
+        self.df = self.calculate_df(self.preprocessed_text, self.dataset_size)
 
         self.total_vocab = [x for x in self.df]
         self.vocabulary_size = len(self.df)
 
-        tf_idf = self.calculate_tfidf(preprocessed_text, self.dataset_size, self.df)
+        tf_idf = self.calculate_tfidf(self.preprocessed_text, self.dataset_size, self.df)
 
         # Vectorize tf-idf
         self.D = np.zeros((self.dataset_size, self.vocabulary_size))
@@ -54,7 +55,9 @@ class Index:
             d_cosines.append(self.cosine_similarity(query_vector, d))
 
         out = np.array(d_cosines).argsort()[-k:][::-1]
-        return out
+
+        # NOTE: now this returns the relevant tweets' content
+        return [self.tweets[idx] for idx in out]
 
 
     def cosine_similarity(self, a, b):
