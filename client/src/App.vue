@@ -1,20 +1,32 @@
 <template>
-	<div>
-		<h3> Test </h3>
+	<div id="main-div">
+		<header>
+			<h2> TF-IDF indexed tweet searcher </h2>
+		</header>
 
-		<form @submit.prevent="searchQuery">
-			<input 
-			   name="searchQuery" type="text" v-model="query"
-			   placeholder="Search something"
-			>
-			<button type="submit">Search</button>
-		</form>
+		<div id="main-content">
+			<form @submit.prevent="searchQuery">
+				<input 
+					 id="search-bar" name="searchQuery" type="text" v-model="query"
+					 placeholder="Search something"
+				>
+			</form>
 
-		<div class="tweet" v-for="(tweet, key) in tweets" :key="key" v-if="tweets.length > 0">
-			<div class="tweet__container">
-				{{ tweet }}	
+			<div class="tweet" v-for="(tweet, key) in tweets" :key="key" v-if="tweets.length > 0">
+				<div class="tweet__container">
+					{{ tweet }}	
+				</div>
 			</div>
 		</div>
+
+		<footer>
+			<a href="https://www.utec.edu.pe/"><img src="../src/assets/utec_logo.png"></a>
+			<div id="github-links"> 
+				<a href=""> Piero Marini Monsante </a>
+				<a href=""> | Gonzalo Alfaro Caso </a>
+			</div>
+		</footer>
+
 	</div>
 </template>
 
@@ -42,6 +54,62 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+#main-div {
+	width: 100%;
+	height: 100vh;
+	font-family: 'Roboto', "sans-serif";
+}
+
+header {
+	width: 100%;
+	height: 8%;
+	background-color: #2b2b2b;
+	color: white;
+	padding: 10px;
+}
+
+#main-content {
+	width: 60%;
+	height: 60%;
+	margin: 5% auto;
+}
+
+form {
+	margin: 40px auto;
+	text-align: center;
+	height: 40px;
+}
+
+#search-bar {
+	width: 100%;
+	height: 100%;
+}
+
+footer {
+	width: 100%;
+	height: 8%;
+	background-color: #2b2b2b;
+	color: white;
+}
+
+img {
+	width: 100px;
+	margin: 10px 10px;
+}
+
+a {
+	color: white;
+	text-decoration: none;
+}
+
+#github-links {
+	width: 50%;
+	float: right;
+	text-align: right;
+	margin: 25px;
+}
+
 #app {
 	font-family: Avenir, Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
@@ -56,6 +124,7 @@ export default {
 	background-color: #ccc;
 	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 	border-radius: 5px;
+	font-size: 100%;
 
 	&__container {
 		padding: 2px 16px;
