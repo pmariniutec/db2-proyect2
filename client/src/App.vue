@@ -14,7 +14,7 @@
 
 			<div class="tweet" v-for="(tweet, key) in tweets" :key="key" v-if="tweets.length > 0">
 				<div class="tweet__container">
-					{{ tweet }}	
+					{{ tweet.text }}	
 				</div>
 			</div>
 		</div>
@@ -76,14 +76,14 @@ header {
 }
 
 form {
-	margin: 40px auto;
+	margin: 40px 0;
+	width: 100%;
 	text-align: center;
-	height: 40px;
 }
 
 #search-bar {
 	width: 100%;
-	height: 100%;
+	height: 40px;
 }
 
 footer {
@@ -121,13 +121,15 @@ a {
 .tweet {
 	display: flex;
 	text-align: center;
-	background-color: #ccc;
+	background-color: #eee;
 	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 	border-radius: 5px;
 	font-size: 100%;
+	margin: 25px 0;
+	width: 100%;
 
 	&__container {
-		padding: 2px 16px;
+		padding: 8px 16px;
 	}
 
 	&:hover {
