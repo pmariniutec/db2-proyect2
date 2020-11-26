@@ -18,7 +18,6 @@ def search_index():
     max_results = request.data.get('max_results', 5)
     if query is not None:
         tweets = index.search(max_results, query)
-        # TODO: get tweet text
         return {'tweets': tweets}
     return {'error': 'No query provided'}
 
