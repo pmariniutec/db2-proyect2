@@ -2,7 +2,7 @@ from flask import request, url_for
 from flask_cors import CORS, cross_origin
 from flask_api import FlaskAPI, status, exceptions
 
-from inverted_index.main import init_index
+from inverted_index.inverted_index import init_index
 
 
 app = FlaskAPI(__name__)
